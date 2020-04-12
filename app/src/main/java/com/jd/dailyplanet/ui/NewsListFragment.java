@@ -1,6 +1,7 @@
 package com.jd.dailyplanet.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,12 +9,23 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.jd.dailyplanet.R;
+import com.jd.dailyplanet.repository.NewsListRepository;
+import com.jd.dailyplanet.rest.model.Result;
+import com.jd.dailyplanet.ui.adapter.NewsAdapter;
+import com.jd.dailyplanet.viewmodel.NewsListViewModel;
+import com.jd.dailyplanet.viewmodel.ViewModelFactory;
 
-public class NewsListFragment extends Fragment {
+public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickListener {
+
+  private NewsListViewModel newsListViewModel;
+  private RecyclerView newsListView;
 
   public NewsListFragment() {
     // Required empty public constructor
@@ -29,8 +41,18 @@ public class NewsListFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    view.findViewById(R.id.newsListScreen).setOnClickListener(v -> {
-      goToNewsDetailsFragment(view);
+    newsListViewModel = new ViewModelProvider(this,
+      new ViewModelFactory(new NewsListRepository()))
+      .get(NewsListViewModel.class);
+    newsListView = view.findViewById(R.id.newsList);
+    //   view.findViewById(R.id.newsListScreen).setOnClickListener(v -> goToNewsDetailsFragment(view));
+
+    newsListViewModel.fetchNewsList("2020-04-12", "2020-04-12");
+
+    newsListViewModel.getResponse().observe(getActivity(), response -> {
+      Log.d("repolist", response.toString());
+      newsListView.setAdapter(new NewsAdapter(response.getResponse().getResults()));
+      newsListView.setLayoutManager(new LinearLayoutManager(getActivity()));
     });
   }
 
@@ -38,5 +60,10 @@ public class NewsListFragment extends Fragment {
     NavDirections action =
       NewsListFragmentDirections.actionNewsListFragmentToNewsDetailsFragment();
     Navigation.findNavController(view).navigate(action);
+  }
+
+  @Override
+  public void onItemClick(Result news) {
+
   }
 }
