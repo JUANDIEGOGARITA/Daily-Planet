@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
-import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.Navigation;
 
 import com.jd.dailyplanet.R;
 
@@ -30,10 +30,13 @@ public class NewsListFragment extends Fragment {
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     view.findViewById(R.id.newsListScreen).setOnClickListener(v -> {
-      NavDirections action =
-        NewsListFragmentDirections.actionNewsListFragmentToNewsDetailsFragment();
-
-      NavHostFragment.findNavController(NewsListFragment.this).navigate(action);
+      goToNewsDetailsFragment(view);
     });
+  }
+
+  public void goToNewsDetailsFragment(View view) {
+    NavDirections action =
+      NewsListFragmentDirections.actionNewsListFragmentToNewsDetailsFragment();
+    Navigation.findNavController(view).navigate(action);
   }
 }

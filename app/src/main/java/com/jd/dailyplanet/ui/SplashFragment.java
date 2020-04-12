@@ -1,6 +1,7 @@
 package com.jd.dailyplanet.ui;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.NavOptions;
-import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.Navigation;
 
 import com.jd.dailyplanet.R;
 
@@ -30,13 +31,18 @@ public class SplashFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    view.findViewById(R.id.splashScreen).setOnClickListener(v -> {
-      NavDirections action =
-        SplashFragmentDirections.actionSplashFragmentToNewsListFragment();
+    new Handler().postDelayed(() -> {
+      goToNewsListFragment(view);
+    }, 700);
+  }
 
-      NavHostFragment.findNavController(SplashFragment.this)
-        .navigate(action, new NavOptions.Builder().setPopUpTo(R.id.splashFragment, true)
-          .build());
-    });
+  public void goToNewsListFragment(View view) {
+    NavDirections action =
+      SplashFragmentDirections.actionSplashFragmentToNewsListFragment();
+
+    Navigation.findNavController(view)
+      .navigate(action, new NavOptions.Builder().setPopUpTo(R.id.splashFragment, true)
+        .build());
+
   }
 }
