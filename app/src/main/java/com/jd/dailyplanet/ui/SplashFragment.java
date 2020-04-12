@@ -14,9 +14,6 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.jd.dailyplanet.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class SplashFragment extends Fragment {
 
   public SplashFragment() {

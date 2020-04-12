@@ -5,34 +5,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.jd.dailyplanet.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class NewsListFragment extends Fragment {
 
   public NewsListFragment() {
     // Required empty public constructor
   }
 
+  @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-    View textView = view.findViewById(R.id.newsListScreen);
-    textView.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        NavDirections action =
-          NewsListFragmentDirections.actionNewsListFragmentToNewsDetailsFragment();
-        NavHostFragment.findNavController(NewsListFragment.this).navigate(action);
-      }
+  public View onCreateView(@NonNull LayoutInflater inflater,
+                           @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_news_list, container, false);
+  }
+
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    view.findViewById(R.id.newsListScreen).setOnClickListener(v -> {
+      NavDirections action =
+        NewsListFragmentDirections.actionNewsListFragmentToNewsDetailsFragment();
+
+      NavHostFragment.findNavController(NewsListFragment.this).navigate(action);
     });
-    return view;
   }
 }

@@ -10,15 +10,11 @@ import android.view.ViewGroup;
 
 import com.jd.dailyplanet.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class NewsDetailsFragment extends Fragment {
 
   public NewsDetailsFragment() {
     // Required empty public constructor
   }
-
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
