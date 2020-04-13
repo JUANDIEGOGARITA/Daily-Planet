@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jd.dailyplanet.R;
 import com.jd.dailyplanet.repository.NewsListRepository;
+import com.jd.dailyplanet.rest.model.request.Section;
 import com.jd.dailyplanet.rest.model.response.common.News;
 import com.jd.dailyplanet.ui.adapter.NewsAdapter;
 import com.jd.dailyplanet.viewmodel.NewsListViewModel;
@@ -45,7 +46,7 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
     newsListView = view.findViewById(R.id.newsList);
     //   view.findViewById(R.id.newsListScreen).setOnClickListener(v -> goToNewsDetailsFragment(view));
 
-    newsListViewModel.fetchNewsList("2020-04-12", "2020-04-12");
+    newsListViewModel.search("barcelona");
 
     newsListViewModel.getResponse().observe(getActivity(), response -> {
       newsListView.setAdapter(new NewsAdapter(response.getNews()));

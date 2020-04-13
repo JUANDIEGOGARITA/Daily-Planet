@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.jd.dailyplanet.repository.NewsListRepository;
+import com.jd.dailyplanet.rest.model.request.Section;
 import com.jd.dailyplanet.rest.model.response.news_list.ListResponse;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -37,9 +38,25 @@ public class NewsListViewModel extends ViewModel {
     return loading;
   }
 
-  public void fetchNewsList(String fromDate, String toDate) {
+  public void search(String query) {
     loading.setValue(true);
-    disposable.add(newsListRepository.getNewsList(fromDate, toDate)
+    disposable.add(newsListRepository.search(query)
+      .subscribeOn(Schedulers.io())
+      .unsubscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread()).subscribe(this::onUserUpdate, this::onUserUpdateError, this::onComplete));
+  }
+
+  public void fetchNewsList() {
+    loading.setValue(true);
+    disposable.add(newsListRepository.getNewsList()
+      .subscribeOn(Schedulers.io())
+      .unsubscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread()).subscribe(this::onUserUpdate, this::onUserUpdateError, this::onComplete));
+  }
+
+  public void fetchNewsListBy(Section sectionId) {
+    loading.setValue(true);
+    disposable.add(newsListRepository.getNewsListBy(sectionId)
       .subscribeOn(Schedulers.io())
       .unsubscribeOn(Schedulers.io())
       .observeOn(AndroidSchedulers.mainThread()).subscribe(this::onUserUpdate, this::onUserUpdateError, this::onComplete));

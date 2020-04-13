@@ -3,6 +3,7 @@ package com.jd.dailyplanet.ui.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jd.dailyplanet.R;
 import com.jd.dailyplanet.rest.model.response.common.News;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -48,18 +50,20 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
   public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     TextView newsTitle;
+    ImageView thumbnail;
     News news;
 
     ViewHolder(View itemView) {
       super(itemView);
       newsTitle = itemView.findViewById(R.id.news_title_tv);
+      thumbnail = itemView.findViewById(R.id.thumbnail);
       itemView.setOnClickListener(this);
     }
 
     void bind(News news) {
       this.news = news;
       this.newsTitle.setText(news.getWebTitle());
-      //    Picasso.with(itemView.getContext()).load(NetworkUtils.buildPosterUrl(news.getThumbnail())).into(newsThumbnail);
+      Picasso.get().load(news.getThumbnail()).into(thumbnail);
     }
 
     @Override
