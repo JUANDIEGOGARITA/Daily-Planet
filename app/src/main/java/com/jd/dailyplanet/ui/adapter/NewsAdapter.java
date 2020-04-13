@@ -9,20 +9,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jd.dailyplanet.R;
-import com.jd.dailyplanet.rest.model.Result;
+import com.jd.dailyplanet.rest.model.response.common.News;
 
 import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
-  private List<Result> mNews;
+  private List<News> mNews;
   private ItemClickListener mClickListener;
 
-  public NewsAdapter(List<Result> moviePosterList) {
-    this.mNews = moviePosterList;
+  public NewsAdapter(List<News> newsList) {
+    this.mNews = newsList;
   }
 
-  public void updateMovieList(List<Result> newsList) {
+  public void updateNewsList(List<News> newsList) {
     mNews = newsList;
     notifyDataSetChanged();
   }
@@ -37,8 +37,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
   @Override
   public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-    Result result = mNews.get(position);
-    holder.bind(result);
+    News news = mNews.get(position);
+    holder.bind(news);
   }
 
   @Override
@@ -48,7 +48,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
   public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     TextView newsTitle;
-    Result news;
+    News news;
 
     ViewHolder(View itemView) {
       super(itemView);
@@ -56,10 +56,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
       itemView.setOnClickListener(this);
     }
 
-    void bind(Result result) {
-      this.news = result;
-      this.newsTitle.setText(result.getWebTitle());
-      //   Picasso.with(itemView.getContext()).load(NetworkUtils.buildPosterUrl(movie.getPosterUrl())).into(moviePoster);
+    void bind(News news) {
+      this.news = news;
+      this.newsTitle.setText(news.getWebTitle());
+      //    Picasso.with(itemView.getContext()).load(NetworkUtils.buildPosterUrl(news.getThumbnail())).into(newsThumbnail);
     }
 
     @Override
@@ -73,6 +73,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
   }
 
   public interface ItemClickListener {
-    void onItemClick(Result news);
+    void onItemClick(News news);
   }
 }

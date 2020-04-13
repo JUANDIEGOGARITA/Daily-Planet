@@ -1,7 +1,6 @@
 package com.jd.dailyplanet.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jd.dailyplanet.R;
 import com.jd.dailyplanet.repository.NewsListRepository;
-import com.jd.dailyplanet.rest.model.Result;
+import com.jd.dailyplanet.rest.model.response.common.News;
 import com.jd.dailyplanet.ui.adapter.NewsAdapter;
 import com.jd.dailyplanet.viewmodel.NewsListViewModel;
 import com.jd.dailyplanet.viewmodel.ViewModelFactory;
@@ -50,20 +48,16 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
     newsListViewModel.fetchNewsList("2020-04-12", "2020-04-12");
 
     newsListViewModel.getResponse().observe(getActivity(), response -> {
-      Log.d("repolist", response.toString());
-      newsListView.setAdapter(new NewsAdapter(response.getResponse().getResults()));
+      newsListView.setAdapter(new NewsAdapter(response.getNews()));
+      ((NewsAdapter) newsListView.getAdapter()).setClickListener(this);
       newsListView.setLayoutManager(new LinearLayoutManager(getActivity()));
     });
   }
 
-  public void goToNewsDetailsFragment(View view) {
-    NavDirections action =
-      NewsListFragmentDirections.actionNewsListFragmentToNewsDetailsFragment();
-    Navigation.findNavController(view).navigate(action);
-  }
-
   @Override
-  public void onItemClick(Result news) {
-
+  public void onItemClick(News news) {
+    Bundle bundle = new Bundle();
+    bundle.putString("newsId", news.getId());
+    Navigation.findNavController(this.requireView()).navigate(R.id.action_newsListFragment_to_newsDetailsFragment, bundle);
   }
 }

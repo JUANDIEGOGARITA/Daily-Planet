@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.jd.dailyplanet.repository.NewsListRepository;
-import com.jd.dailyplanet.rest.model.Response;
+import com.jd.dailyplanet.rest.model.response.news_list.ListResponse;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -17,7 +17,7 @@ public class NewsListViewModel extends ViewModel {
 
   private CompositeDisposable disposable = new CompositeDisposable();
 
-  private final MutableLiveData<Response> response = new MutableLiveData<>();
+  private final MutableLiveData<ListResponse> response = new MutableLiveData<>();
   private final MutableLiveData<Boolean> error = new MutableLiveData<>();
   private final MutableLiveData<Boolean> loading = new MutableLiveData<>();
 
@@ -25,7 +25,7 @@ public class NewsListViewModel extends ViewModel {
     this.newsListRepository = newsListRepository;
   }
 
-  public LiveData<Response> getResponse() {
+  public LiveData<ListResponse> getResponse() {
     return response;
   }
 
@@ -49,8 +49,8 @@ public class NewsListViewModel extends ViewModel {
     this.loading.setValue(false);
   }
 
-  private void onUserUpdate(Response response) {
-    this.response.setValue(response);
+  private void onUserUpdate(ListResponse listResponse) {
+    this.response.setValue(listResponse);
     this.error.setValue(false);
   }
 
