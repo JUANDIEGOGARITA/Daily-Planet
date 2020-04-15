@@ -2,6 +2,9 @@ package com.jd.dailyplanet.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,19 +18,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jd.dailyplanet.R;
 import com.jd.dailyplanet.repository.NewsListRepository;
-import com.jd.dailyplanet.rest.model.request.Section;
 import com.jd.dailyplanet.rest.model.response.common.News;
 import com.jd.dailyplanet.ui.adapter.NewsAdapter;
+import com.jd.dailyplanet.ui.adapter.NewsCategory;
 import com.jd.dailyplanet.viewmodel.NewsListViewModel;
 import com.jd.dailyplanet.viewmodel.ViewModelFactory;
+
+import java.util.ArrayList;
 
 public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickListener {
 
   private NewsListViewModel newsListViewModel;
   private RecyclerView newsListView;
+  private NewsAdapter newsAdapter;
 
   public NewsListFragment() {
     // Required empty public constructor
+  }
+
+
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setHasOptionsMenu(true);
   }
 
   @Nullable
@@ -40,16 +53,19 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    newsAdapter = new NewsAdapter(new ArrayList<>());
+    newsListView = view.findViewById(R.id.newsList);
+    newsListView.setAdapter(newsAdapter);
     newsListViewModel = new ViewModelProvider(this,
       new ViewModelFactory(new NewsListRepository()))
       .get(NewsListViewModel.class);
-    newsListView = view.findViewById(R.id.newsList);
     //   view.findViewById(R.id.newsListScreen).setOnClickListener(v -> goToNewsDetailsFragment(view));
 
-    newsListViewModel.search("barcelona");
+    newsListViewModel.fetchNewsList();
 
     newsListViewModel.getResponse().observe(getActivity(), response -> {
-      newsListView.setAdapter(new NewsAdapter(response.getNews()));
+      newsAdapter.updateNewsList(response.getNews());
+
       ((NewsAdapter) newsListView.getAdapter()).setClickListener(this);
       newsListView.setLayoutManager(new LinearLayoutManager(getActivity()));
     });
@@ -60,5 +76,25 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
     Bundle bundle = new Bundle();
     bundle.putString("newsId", news.getId());
     Navigation.findNavController(this.requireView()).navigate(R.id.action_newsListFragment_to_newsDetailsFragment, bundle);
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    // Do something that differs the Activity's menu here
+    super.onCreateOptionsMenu(menu, inflater);
+  }
+
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.sports:
+        newsAdapter.filterBy(NewsCategory.SPORT);
+        return true;
+      default:
+        break;
+    }
+
+    return false;
   }
 }

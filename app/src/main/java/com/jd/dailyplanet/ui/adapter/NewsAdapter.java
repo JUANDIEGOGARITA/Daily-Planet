@@ -3,6 +3,8 @@ package com.jd.dailyplanet.ui.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,21 +15,27 @@ import com.jd.dailyplanet.R;
 import com.jd.dailyplanet.rest.model.response.common.News;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
+public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> implements Filterable {
 
-  private List<News> mNews;
+  private List<News> filteredNewsList;
+  private List<News> newsList;
+
   private ItemClickListener mClickListener;
 
   public NewsAdapter(List<News> newsList) {
-    this.mNews = newsList;
+    this.filteredNewsList = newsList;
+    this.newsList = new ArrayList<>(filteredNewsList);
   }
 
   public void updateNewsList(List<News> newsList) {
-    mNews = newsList;
+    filteredNewsList = newsList;
+    this.newsList = new ArrayList<>(filteredNewsList);
     notifyDataSetChanged();
   }
+
 
   @Override
   @NonNull
@@ -39,14 +47,51 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
   @Override
   public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-    News news = mNews.get(position);
+    News news = filteredNewsList.get(position);
     holder.bind(news);
   }
 
   @Override
   public int getItemCount() {
-    return mNews.size();
+    return filteredNewsList.size();
   }
+
+  public void filterBy(NewsCategory category) {
+    getFilter().filter(category.category);
+  }
+
+  @Override
+  public Filter getFilter() {
+    return newsFilter;
+  }
+
+  private Filter newsFilter = new Filter() {
+    @Override
+    protected FilterResults performFiltering(CharSequence constraint) {
+      List<News> filteredList = new ArrayList<>();
+      if (constraint == null || constraint.length() == 0) {
+        filteredList.addAll(newsList);
+      }
+      else {
+        String filterPattern = constraint.toString().toLowerCase().trim();
+        for (News news : newsList) {
+          if (news.getSectionId().equals(filterPattern)) {
+            filteredList.add(news);
+          }
+        }
+      }
+      FilterResults results = new FilterResults();
+      results.values = filteredList;
+      return results;
+    }
+
+    @Override
+    protected void publishResults(CharSequence constraint, FilterResults results) {
+      filteredNewsList.clear();
+      filteredNewsList.addAll((ArrayList<News>) results.values);
+      notifyDataSetChanged();
+    }
+  };
 
   public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     TextView newsTitle;
