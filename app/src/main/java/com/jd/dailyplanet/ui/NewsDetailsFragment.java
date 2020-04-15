@@ -49,7 +49,7 @@ public class NewsDetailsFragment extends Fragment {
     newsDetailsViewModel.fetchNewsDetails(getArguments().getString("newsId"));
     newsDetailsViewModel.getResponse().observe(getActivity(), detailsResponse -> {
       Log.e("jd", detailsResponse.toString());
-      body.setText(detailsResponse.getResponse().getNews().getBodySummary().get(0).getBodyTextSummary());
+      body.setText(detailsResponse.getResponse().getNews().getBodySummary());
       Picasso.get().load(detailsResponse.getResponse().getNews().getThumbnail()).into(thumbnail);
     });
   }

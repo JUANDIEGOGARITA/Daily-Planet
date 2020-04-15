@@ -1,5 +1,7 @@
 package com.jd.dailyplanet.ui;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -19,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.jd.dailyplanet.R;
 import com.jd.dailyplanet.repository.NewsListRepository;
 import com.jd.dailyplanet.rest.model.response.common.News;
+import com.jd.dailyplanet.ui.adapter.FilterType;
 import com.jd.dailyplanet.ui.adapter.NewsAdapter;
 import com.jd.dailyplanet.ui.adapter.NewsCategory;
 import com.jd.dailyplanet.viewmodel.NewsListViewModel;
@@ -80,7 +84,23 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
 
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    // Do something that differs the Activity's menu here
+    SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+    SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+    searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+    searchView.setMaxWidth(Integer.MAX_VALUE);
+    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+      @Override
+      public boolean onQueryTextSubmit(String query) {
+        return false;
+      }
+
+      @Override
+      public boolean onQueryTextChange(String newText) {
+        newsAdapter.filterBy(FilterType.QUERY, newText);
+        return false;
+      }
+    });
+
     super.onCreateOptionsMenu(menu, inflater);
   }
 
@@ -89,7 +109,9 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.sports:
-        newsAdapter.filterBy(NewsCategory.SPORT);
+        newsAdapter.filterBy(FilterType.CATEGORY, NewsCategory.SPORT);
+        return true;
+      case R.id.search:
         return true;
       default:
         break;

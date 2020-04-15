@@ -22,6 +22,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
 
   private List<News> filteredNewsList;
   private List<News> newsList;
+  private FilterType currentFilterType;
 
   private ItemClickListener mClickListener;
 
@@ -35,7 +36,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
     this.newsList = new ArrayList<>(filteredNewsList);
     notifyDataSetChanged();
   }
-
 
   @Override
   @NonNull
@@ -56,16 +56,55 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
     return filteredNewsList.size();
   }
 
-  public void filterBy(NewsCategory category) {
-    getFilter().filter(category.category);
+  public void filterBy(FilterType filterType, NewsCategory category) {
+    filterBy(filterType, category.category);
+  }
+
+  public void filterBy(FilterType filterType, String query) {
+    currentFilterType = filterType;
+    getFilter().filter(query);
   }
 
   @Override
   public Filter getFilter() {
-    return newsFilter;
+    switch (currentFilterType) {
+      case QUERY:
+        return queryFilter;
+      case CATEGORY:
+      default:
+        return categoryFilter;
+    }
   }
 
-  private Filter newsFilter = new Filter() {
+  private Filter queryFilter = new Filter() {
+    @Override
+    protected FilterResults performFiltering(CharSequence constraint) {
+      List<News> filteredList = new ArrayList<>();
+      if (constraint == null || constraint.length() == 0) {
+        filteredList.addAll(newsList);
+      }
+      else {
+        String filterPattern = constraint.toString().toLowerCase().trim();
+        for (News news : newsList) {
+          if (news.getWebTitle().toLowerCase().trim().contains(filterPattern)) {
+            filteredList.add(news);
+          }
+        }
+      }
+      FilterResults results = new FilterResults();
+      results.values = filteredList;
+      return results;
+    }
+
+    @Override
+    protected void publishResults(CharSequence constraint, FilterResults results) {
+      filteredNewsList.clear();
+      filteredNewsList.addAll((ArrayList<News>) results.values);
+      notifyDataSetChanged();
+    }
+  };
+
+  private Filter categoryFilter = new Filter() {
     @Override
     protected FilterResults performFiltering(CharSequence constraint) {
       List<News> filteredList = new ArrayList<>();
@@ -108,7 +147,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
     void bind(News news) {
       this.news = news;
       this.newsTitle.setText(news.getWebTitle());
-      Picasso.get().load(news.getThumbnail()).into(thumbnail);
+      if (news.getThumbnail() != null) {
+        Picasso.get().load(news.getThumbnail()).into(thumbnail);
+      }
     }
 
     @Override

@@ -3,8 +3,6 @@ package com.jd.dailyplanet.rest.model.response.common;
 
 import com.squareup.moshi.Json;
 
-import java.util.List;
-
 public class News {
 
   @Json(name = "id")
@@ -23,11 +21,23 @@ public class News {
   private Blocks blocks;
 
   public String getThumbnail() {
-    return field.getThumbnail();
+    if (field != null && field.getThumbnail() != null){
+      return field.getThumbnail();
+    }
+    return null;
   }
 
-  public List<Body> getBodySummary() {
-    return blocks.getBody();
+  public String getBodySummary() {
+    if (blocks.getBody() != null &&
+      !blocks.getBody().isEmpty() &&
+      blocks.getBody().get(0) != null &&
+      blocks.getBody().get(0).getBodyTextSummary() != null &&
+      !blocks.getBody().get(0).getBodyTextSummary().isEmpty()) {
+      return blocks.getBody().get(0).getBodyTextSummary();
+    }
+    else {
+      return "";
+    }
   }
 
   public String getId() {

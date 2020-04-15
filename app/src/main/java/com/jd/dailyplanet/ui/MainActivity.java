@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
       case R.id.sports:
         // Not implemented here
         return false;
+      case R.id.search:
+        return false;
       default:
         break;
     }
