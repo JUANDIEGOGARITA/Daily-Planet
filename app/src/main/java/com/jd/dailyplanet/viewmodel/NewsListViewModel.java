@@ -46,6 +46,10 @@ public class NewsListViewModel extends ViewModel {
       .observeOn(AndroidSchedulers.mainThread()).subscribe(this::onUserUpdate, this::onUserUpdateError, this::onComplete));
   }
 
+  public void fetchReadLaterNewsList() {
+    newsListRepository.getReadLaterNews();
+  }
+
   public void fetchNewsList() {
     loading.setValue(true);
     disposable.add(newsListRepository.getNewsList()

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.jd.dailyplanet.db.entity.News;
 import com.jd.dailyplanet.repository.NewsDetailsRepository;
 import com.jd.dailyplanet.rest.model.response.news_details.DetailsResponse;
 
@@ -51,6 +52,10 @@ public class NewsDetailsViewModel extends ViewModel {
   private void onUserUpdate(DetailsResponse detailsResponse) {
     this.response.setValue(detailsResponse);
     this.error.setValue(false);
+  }
+
+  public void readLater(News news) {
+    newsDetailsRepository.readLater(news);
   }
 
   private void onUserUpdateError(Throwable throwable) {
