@@ -2,7 +2,9 @@ package com.jd.dailyplanet.ui;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +18,8 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +27,7 @@ import com.jd.dailyplanet.R;
 import com.jd.dailyplanet.repository.NewsListRepository;
 import com.jd.dailyplanet.rest.model.response.common.News;
 import com.jd.dailyplanet.ui.adapter.FilterType;
+import com.jd.dailyplanet.ui.adapter.GridSpacingItemDecoration;
 import com.jd.dailyplanet.ui.adapter.NewsAdapter;
 import com.jd.dailyplanet.ui.adapter.NewsCategory;
 import com.jd.dailyplanet.viewmodel.NewsListViewModel;
@@ -39,7 +44,6 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
   public NewsListFragment() {
     // Required empty public constructor
   }
-
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,7 +65,7 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
     newsListView = view.findViewById(R.id.newsList);
     newsListView.setAdapter(newsAdapter);
     newsListViewModel = new ViewModelProvider(this,
-      new ViewModelFactory(new NewsListRepository()))
+      new ViewModelFactory(new NewsListRepository(getContext())))
       .get(NewsListViewModel.class);
     //   view.findViewById(R.id.newsListScreen).setOnClickListener(v -> goToNewsDetailsFragment(view));
 
@@ -72,7 +76,18 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
 
       ((NewsAdapter) newsListView.getAdapter()).setClickListener(this);
       newsListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+      RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+      newsListView.setLayoutManager(mLayoutManager);
+     // newsListView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+      newsListView.setItemAnimator(new DefaultItemAnimator());
+
     });
+  }
+
+  private int dpToPx(int dp) {
+    Resources r = getResources();
+    return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
   }
 
   @Override
@@ -84,6 +99,8 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
 
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.main, menu);
     SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
     SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
     searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
@@ -101,9 +118,8 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
       }
     });
 
-    super.onCreateOptionsMenu(menu, inflater);
-  }
 
+  }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {

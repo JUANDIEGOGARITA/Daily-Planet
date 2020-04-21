@@ -1,7 +1,6 @@
 package com.jd.dailyplanet.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,12 +42,11 @@ public class NewsDetailsFragment extends Fragment {
     body = view.findViewById(R.id.newsDetailsScreen);
 
     newsDetailsViewModel = new ViewModelProvider(this,
-      new ViewModelFactory(new NewsDetailsRepository()))
+      new ViewModelFactory(new NewsDetailsRepository(getContext())))
       .get(NewsDetailsViewModel.class);
 
     newsDetailsViewModel.fetchNewsDetails(getArguments().getString("newsId"));
     newsDetailsViewModel.getResponse().observe(getActivity(), detailsResponse -> {
-      Log.e("jd", detailsResponse.toString());
       body.setText(detailsResponse.getResponse().getNews().getBodySummary());
       Picasso.get().load(detailsResponse.getResponse().getNews().getThumbnail()).into(thumbnail);
     });
