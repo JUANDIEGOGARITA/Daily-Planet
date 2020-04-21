@@ -12,13 +12,6 @@
         app:showAsAction="always"
         app:actionViewClass="androidx.appcompat.widget.SearchView"/>
 
-    <item
-        android:id="@+id/read_later"
-        android:orderInCategory="1"
-        android:title="Read Later"
-        android:icon="@drawable/ic_book"
-        app:showAsAction="always" />
-
     <group android:id="@+id/group_delete">
     <item
         android:id="@+id/sports"

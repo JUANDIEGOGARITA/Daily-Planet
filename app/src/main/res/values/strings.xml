@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Daily Planet</string>
+    <string name="thumbnail">thumbnail</string>
 </resources>

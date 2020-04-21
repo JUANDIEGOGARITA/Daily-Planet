@@ -27,7 +27,6 @@ import com.jd.dailyplanet.R;
 import com.jd.dailyplanet.repository.NewsListRepository;
 import com.jd.dailyplanet.rest.model.response.common.News;
 import com.jd.dailyplanet.ui.adapter.FilterType;
-import com.jd.dailyplanet.ui.adapter.GridSpacingItemDecoration;
 import com.jd.dailyplanet.ui.adapter.NewsAdapter;
 import com.jd.dailyplanet.ui.adapter.NewsCategory;
 import com.jd.dailyplanet.viewmodel.NewsListViewModel;
@@ -79,15 +78,9 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
 
       RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
       newsListView.setLayoutManager(mLayoutManager);
-     // newsListView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
       newsListView.setItemAnimator(new DefaultItemAnimator());
 
     });
-  }
-
-  private int dpToPx(int dp) {
-    Resources r = getResources();
-    return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
   }
 
   @Override
@@ -100,7 +93,7 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     super.onCreateOptionsMenu(menu, inflater);
-    inflater.inflate(R.menu.main, menu);
+    inflater.inflate(R.menu.list, menu);
     SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
     SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
     searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
@@ -117,8 +110,6 @@ public class NewsListFragment extends Fragment implements NewsAdapter.ItemClickL
         return false;
       }
     });
-
-
   }
 
   @Override

@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_margin="@dimen/card_margin"
-        android:elevation="5dp"
+        android:elevation="@dimen/elevation"
         card_view:cardCornerRadius="@dimen/card_album_radius">
 
         <RelativeLayout
@@ -19,19 +19,24 @@
             <ImageView
                 android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
-                android:layout_height="230dp"
+                android:layout_height="@dimen/thumbnail_big_size"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="thumbnail"
-                android:scaleType="fitXY"/>
+                android:contentDescription="@string/thumbnail"
+                android:scaleType="fitXY" />
 
-            <TextView
-                android:id="@+id/newsDetailsScreen"
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/thumbnail"
-                android:padding="@dimen/album_title_padding"
-                android:textColor="@color/album_title"
-                android:textSize="@dimen/album_title" />
+                android:padding="@dimen/album_title_padding">
+
+                <TextView
+                    android:id="@+id/newsDetailsScreen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/album_title"
+                    android:textSize="@dimen/album_title" />
+            </ScrollView>
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
